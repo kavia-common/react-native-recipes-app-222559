@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useMemo, useRef } from "react";
 import {
   ScrollView,
   Text,
@@ -7,9 +7,9 @@ import {
   Dimensions,
   TouchableHighlight,
 } from "react-native";
-import styles from "./styles";
-import { useSharedValue } from 'react-native-reanimated';
-import Carousel, { Pagination } from 'react-native-reanimated-carousel';
+import { makeStyles } from "./styles";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel, { Pagination } from "react-native-reanimated-carousel";
 import {
   getIngredientName,
   getCategoryName,
@@ -17,16 +17,20 @@ import {
 } from "../../data/MockDataAPI";
 import BackButton from "../../components/BackButton/BackButton";
 import ViewIngredientsButton from "../../components/ViewIngredientsButton/ViewIngredientsButton";
+import { useTheme } from "../../theme/useTheme";
 
 const { width: viewportWidth } = Dimensions.get("window");
 
 export default function RecipeScreen(props) {
   const { navigation, route } = props;
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   const item = route.params?.item;
   const category = getCategoryById(item.categoryId);
   const title = getCategoryName(category.id);
-  const slider1Ref = useRef(null)
-  const progress = useSharedValue(0)
+  const slider1Ref = useRef(null);
+  const progress = useSharedValue(0);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -40,7 +44,7 @@ export default function RecipeScreen(props) {
       ),
       headerRight: () => <View />,
     });
-  }, []);
+  }, [navigation]);
 
   const renderImage = ({ item }) => (
     <TouchableHighlight>
@@ -51,30 +55,26 @@ export default function RecipeScreen(props) {
   );
 
   const onPressIngredient = (item) => {
-    var name = getIngredientName(item);
-    let ingredient = item;
+    const name = getIngredientName(item);
+    const ingredient = item;
     navigation.navigate("Ingredient", { ingredient, name });
   };
 
-
-  const onPressPagination = (index) =>
-    {
-      slider1Ref.current?.scrollTo({
-        count: index - progress.value,
-        animated: true,
-      })
-    }
-  
+  const onPressPagination = (index) => {
+    slider1Ref.current?.scrollTo({
+      count: index - progress.value,
+      animated: true,
+    });
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.carouselContainer}>
         <View style={styles.carousel}>
           <Carousel
-              ref={c =>
-              {
-                slider1Ref.current = c
-              }}
+            ref={(c) => {
+              slider1Ref.current = c;
+            }}
             loop={false}
             width={viewportWidth}
             height={viewportWidth}
@@ -85,7 +85,7 @@ export default function RecipeScreen(props) {
             onProgressChange={progress}
           />
           <Pagination.Basic
-            renderItem={(item) => (
+            renderItem={() => (
               <View
                 style={{
                   backgroundColor: "rgba(255,255,255,1)",
@@ -126,8 +126,8 @@ export default function RecipeScreen(props) {
         <View style={styles.infoContainer}>
           <ViewIngredientsButton
             onPress={() => {
-              let ingredients = item.ingredients;
-              let title = "Ingredients for " + item.title;
+              const ingredients = item.ingredients;
+              const title = "Ingredients for " + item.title;
               navigation.navigate("IngredientsDetails", { ingredients, title });
             }}
           />

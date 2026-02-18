@@ -1,11 +1,21 @@
-import { StyleSheet } from 'react-native';
-import { RecipeCard } from '../../AppStyles';
+import { StyleSheet } from "react-native";
+import { getRecipeCardStyles } from "../../AppStyles";
 
-const styles = StyleSheet.create({
-  container: RecipeCard.container,
-  photo: RecipeCard.photo,
-  title: RecipeCard.title,
-  category: RecipeCard.category
-});
+/**
+ * PUBLIC_INTERFACE
+ * Create screen styles for the current theme.
+ */
+export function makeStyles(theme) {
+  const card = getRecipeCardStyles(theme);
 
-export default styles;
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    container: card.container,
+    photo: card.photo,
+    title: card.title,
+    category: card.category,
+  });
+}

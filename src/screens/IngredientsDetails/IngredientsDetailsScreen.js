@@ -1,10 +1,13 @@
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useMemo } from "react";
 import { FlatList, Text, View, Image, TouchableHighlight } from "react-native";
-import styles from "./styles";
+import { makeStyles } from "./styles";
 import { getIngredientName, getAllIngredients } from "../../data/MockDataAPI";
+import { useTheme } from "../../theme/useTheme";
 
 export default function IngredientsDetailsScreen(props) {
   const { navigation, route } = props;
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
 
   const item = route.params?.ingredients;
   const ingredientsArray = getAllIngredients(item);
@@ -16,15 +19,15 @@ export default function IngredientsDetailsScreen(props) {
         fontSize: 16,
       },
     });
-  }, []);
+  }, [navigation, route]);
 
   const onPressIngredient = (item) => {
-    let name = getIngredientName(item.ingredientId);
-    let ingredient = item.ingredientId;
+    const name = getIngredientName(item.ingredientId);
+    const ingredient = item.ingredientId;
     navigation.navigate("Ingredient", { ingredient, name });
   };
 
-  const renderIngredient = ({ item, index }) => (
+  const renderIngredient = ({ item }) => (
     <TouchableHighlight
       underlayColor="rgba(73,182,77,0.9)"
       onPress={() => onPressIngredient(item[0])}
@@ -32,13 +35,13 @@ export default function IngredientsDetailsScreen(props) {
       <View style={styles.container}>
         <Image style={styles.photo} source={{ uri: item[0].photo_url }} />
         <Text style={styles.title}>{item[0].name}</Text>
-        <Text style={{ color: "grey" }}>{item[1]}</Text>
+        <Text style={styles.amount}>{item[1]}</Text>
       </View>
     </TouchableHighlight>
   );
 
   return (
-    <View>
+    <View style={styles.screen}>
       <FlatList
         vertical
         showsVerticalScrollIndicator={false}

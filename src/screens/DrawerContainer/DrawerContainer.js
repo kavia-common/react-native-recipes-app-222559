@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View } from "react-native";
 import PropTypes from "prop-types";
-import styles from "./styles";
+import { makeStyles } from "./styles";
 import MenuButton from "../../components/MenuButton/MenuButton";
+import { useTheme } from "../../theme/useTheme";
 
 export default function DrawerContainer(props) {
   const { navigation } = props;
+  const { theme, toggleMode } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   return (
     <View style={styles.content}>
       <View style={styles.container}>
@@ -30,6 +34,14 @@ export default function DrawerContainer(props) {
           source={require("../../../assets/icons/search.png")}
           onPress={() => {
             navigation.navigate("Main", { screen: "Search" });
+            navigation.closeDrawer();
+          }}
+        />
+        <MenuButton
+          title="TOGGLE THEME"
+          source={require("../../../assets/icons/category.png")}
+          onPress={() => {
+            toggleMode();
             navigation.closeDrawer();
           }}
         />

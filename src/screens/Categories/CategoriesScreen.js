@@ -1,12 +1,15 @@
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useMemo } from "react";
 import { FlatList, Text, View, Image, TouchableHighlight } from "react-native";
-import styles from "./styles";
+import { makeStyles } from "./styles";
 import { categories } from "../../data/dataArrays";
 import { getNumberOfRecipes } from "../../data/MockDataAPI";
 import MenuImage from "../../components/MenuImage/MenuImage";
+import { useTheme } from "../../theme/useTheme";
 
 export default function CategoriesScreen(props) {
   const { navigation } = props;
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -25,7 +28,7 @@ export default function CategoriesScreen(props) {
       ),
       headerRight: () => <View />,
     });
-  }, []);
+  }, [navigation]);
 
   const onPressCategory = (item) => {
     const title = item.name;
@@ -34,18 +37,27 @@ export default function CategoriesScreen(props) {
   };
 
   const renderCategory = ({ item }) => (
-    <TouchableHighlight underlayColor="rgba(73,182,77,0.9)" onPress={() => onPressCategory(item)}>
+    <TouchableHighlight
+      underlayColor="rgba(73,182,77,0.9)"
+      onPress={() => onPressCategory(item)}
+    >
       <View style={styles.categoriesItemContainer}>
         <Image style={styles.categoriesPhoto} source={{ uri: item.photo_url }} />
         <Text style={styles.categoriesName}>{item.name}</Text>
-        <Text style={styles.categoriesInfo}>{getNumberOfRecipes(item.id)} recipes</Text>
+        <Text style={styles.categoriesInfo}>
+          {getNumberOfRecipes(item.id)} recipes
+        </Text>
       </View>
     </TouchableHighlight>
   );
 
   return (
-    <View>
-      <FlatList data={categories} renderItem={renderCategory} keyExtractor={(item) => `${item.id}`} />
+    <View style={styles.screen}>
+      <FlatList
+        data={categories}
+        renderItem={renderCategory}
+        keyExtractor={(item) => `${item.id}`}
+      />
     </View>
   );
 }

@@ -1,17 +1,22 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  container: {
-    flex: 1,
-    alignItems: 'flex-start',
-    paddingHorizontal: 20
-  }
-});
-
-export default styles;
+/**
+ * PUBLIC_INTERFACE
+ * Create drawer styles for the current theme.
+ */
+export function makeStyles(theme) {
+  return StyleSheet.create({
+    content: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.colors.surface,
+    },
+    container: {
+      flex: 1,
+      alignItems: "flex-start",
+      paddingHorizontal: 20,
+    },
+  });
+}
